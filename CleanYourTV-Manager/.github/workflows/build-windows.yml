@@ -1,0 +1,25 @@
+name: Build Windows
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'CleanYourTV-Manager/**'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: CleanYourTV-Manager
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt pyinstaller
+      - run: pyinstaller --noconfirm --onefile --windowed --name CleanYourTV-Manager app/main.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CleanYourTV-Manager-windows
+          path: CleanYourTV-Manager/dist/CleanYourTV-Manager.exe
